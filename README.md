@@ -20,8 +20,8 @@ Nice to have
 
 ### TBA (Decisions)
 - The CLI tool is to follow UNIX philosofy - do one thing, but do it well.
-- - It will take the string from the _stdin_. The string terminator is `\n`.
-- - It will output the permutations to the _stdout_, separated by `\n`
+  - It will take the string from the _stdin_. The string terminator is `\n`.
+  - It will output the permutations to the _stdout_, separated by `\n`
 - Using previous decisions, the calculation of number of permutations can be done, using _wc_ tool from GNU coreutils. That would also keep API concise and unified.
 
 ### Algorithm Analisys
