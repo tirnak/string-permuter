@@ -1,19 +1,26 @@
 package permutation;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.val;
 
-public class LexicographicPermutator<T extends Comparable<T>> {
+public class LexicographicPermuter<T extends Comparable<T>> {
 
+    private final Collator collator = Collator.getInstance();
     private final List<T> currentPermutation;
+    private boolean isFirst = true;
 
-    public LexicographicPermutator(List<T> rawInput) {
-        List input = new ArrayList(rawInput);
-        Collections.sort(input);
-        currentPermutation = input;
+    {
+        collator.setStrength(Collator.IDENTICAL);
+        collator.setDecomposition(Collator.FULL_DECOMPOSITION);
+    }
+
+    public LexicographicPermuter(List<T> rawInput) {
+        currentPermutation = new ArrayList<>(rawInput);
+        Collections.sort(currentPermutation);
     }
 
     public Optional<List<T>> next() {
@@ -21,23 +28,31 @@ public class LexicographicPermutator<T extends Comparable<T>> {
             return Optional.empty();
         }
 
+        if (isFirst) {
+            isFirst = false;
+            return Optional.of(List.copyOf(currentPermutation));
+        }
+
         int lastIndex = currentPermutation.size() - 1;
         int i = lastIndex;
 
+        // Find element before the start of the decreasing suffix - pivot
         while (i > 0 && lessOrEqual(i, i - 1)) {
             i--;
         }
 
+        // If already the greatest possible permutation.
         if (i <= 0) {
             return Optional.empty();
         }
 
+        // Find rightmost element in the suffix, greater than the pivot
         int j = lastIndex;
         while (lessOrEqual(j, i - 1)) {
             j--;
         }
 
-        swap(i - 1, j);
+        swap(j, i - 1);
         reverse(i, lastIndex);
         return Optional.of(List.copyOf(currentPermutation));
     }
@@ -49,8 +64,6 @@ public class LexicographicPermutator<T extends Comparable<T>> {
 
         val result = new ArrayList<List<T>>();
 
-        result.add(List.copyOf(currentPermutation));
-
         Optional<List<T>> nextPermutation;
 
         do {
@@ -61,16 +74,10 @@ public class LexicographicPermutator<T extends Comparable<T>> {
         return result;
     }
 
-    private boolean less(int k, int m) {
-        T tk = currentPermutation.get(k);
-        T tm = currentPermutation.get(m);
-        return tk.compareTo(tm) < 0;
-    }
-
     private boolean lessOrEqual(int k, int m) {
         T tk = currentPermutation.get(k);
         T tm = currentPermutation.get(m);
-        return tk.compareTo(tm) <= 0;
+        return collator.compare(tk, tm) <= 0;
     }
 
     private void swap(int k, int m) {

@@ -1,4 +1,4 @@
-A software solution to permutate words from a phrase, provided via input.
+A software solution to permute words from a phrase, provided via input.
 
 ### Software requirements
 - Generate all possible permutations of input strings
@@ -22,18 +22,40 @@ Nice to have
 - The CLI tool is to follow UNIX philosofy - do one thing, but do it well.
   - It will take the string from the _stdin_. The string terminator is `\n`.
   - It will output the permutations to the _stdout_, separated by `\n`
-- Using previous decisions, the calculation of number of permutations can be done, using _wc_ tool from GNU coreutils. That would also keep API concise and unified.
-
-### Algorithm Analisys
-According to Sedgewick, https://www.princeton.edu/~rblee/ELE572Papers/p137-sedgewick.pdf, the optimal lexicographically sorted permutations generation algorithm is introduced by Ord-Smith.
-This algorithm will be implemented.
+- There won't be string sanitization, as it is not requested. Also, "Split the string into tokens", not words, so non-alphabetic characters are expected.
 
 ### Configuration
 - No configuration at this point.
 - Future improvements - string separator could be configured
 
+### Usage
+Create a Java archive, using maven
+```
+$ sudo apt-get install maven # if needed
+$ mvn package
+```
+Resulting JAR artefact would be located in the `./target` folder. 
+
 ### Use cases
-- Get permutations
-- Get count
-- Use custom locale
+- Get permutations \
+`$ echo "This is a test" | java -jar target/string-permutator-*.jar`
+- Get count \
+`$ echo "This is a test" | java -jar target/string-permutator-*.jar | wc -l`
+- Use custom collation \
+Compare English and French collations.
+```
+rm  permutations-*
+echo "peach péché pêche sin" | java  -Duser.language=fr -Duser.country=FR  -jar target/string-permutator-*.jar > permutations-fr.txt
+echo "peach péché pêche sin" | java  -jar target/string-permutator-*.jar > permutations-en.txt
+diff permutations-*
+```
+
+
+NOTE! Not working for Spanish of German collation. Requires further debugging. Use case:
+```
+rm  permutations-*
+echo "chao cu" | java  -Duser.language=es -Duser.country=ES  -jar target/string-permutator-*.jar > permutations-fr.txt
+echo "chao cu" | java  -Duser.language=en -Duser.country=US -jar target/string-permutator-*.jar > permutations-en.txt
+diff permutations-*
+```
 
