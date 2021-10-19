@@ -1,6 +1,9 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.text.Collator;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import permutation.LexicographicPermuter;
@@ -43,5 +46,21 @@ public class LexicographicPermuterTest {
         assertEquals(3, result.size());
         assertEquals(List.of("1", "1", "2"), result.get(0));
         assertEquals(List.of("2", "1", "1"), result.get(2));
+    }
+
+    @Test
+    public void testCollationEsEs() {
+        val curLocale = Locale.getDefault();
+
+        System.out.println(Arrays.toString(Collator.getAvailableLocales()));
+        Locale.setDefault(new Locale("es", "ES"));
+
+        val items = List.of("luz", "llama", "curioso", "chalina");
+        val permutator = new LexicographicPermuter(items);
+        val result = permutator.getAll();
+        assertEquals(24, result.size());
+        assertEquals(List.of("curioso", "chalina", "luz", "llama"), result.get(0));
+
+        Locale.setDefault(curLocale);
     }
 }

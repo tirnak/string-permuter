@@ -1,5 +1,6 @@
 package permutation;
 
+import collations.CustomCollationsBootstrap;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +9,9 @@ import java.util.Optional;
 import lombok.val;
 
 public class LexicographicPermuter<T extends Comparable<T>> {
+    static {
+        CustomCollationsBootstrap.loadExtraCollations();
+    }
 
     private final Collator collator = Collator.getInstance();
     private final List<T> currentPermutation;
@@ -20,7 +24,7 @@ public class LexicographicPermuter<T extends Comparable<T>> {
 
     public LexicographicPermuter(List<T> rawInput) {
         currentPermutation = new ArrayList<>(rawInput);
-        Collections.sort(currentPermutation);
+        currentPermutation.sort(collator);
     }
 
     public Optional<List<T>> next() {

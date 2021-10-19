@@ -41,21 +41,28 @@ Resulting JAR artefact would be located in the `./target` folder.
 `$ echo "This is a test" | java -jar target/string-permutator-*.jar`
 - Get count \
 `$ echo "This is a test" | java -jar target/string-permutator-*.jar | wc -l`
-- Use custom collation \
-Compare English and French collations.
+- Use custom collation
+  - Compare English and (accents for) French collations.
 ```
 rm  permutations-*
-echo "peach péché pêche sin" | java  -Duser.language=fr -Duser.country=FR  -jar target/string-permutator-*.jar > permutations-fr.txt
-echo "peach péché pêche sin" | java  -jar target/string-permutator-*.jar > permutations-en.txt
+echo "peach péché pêche sin" | java  -Duser.language=fr -Duser.country=FR -jar target/string-permutator-*.jar > permutations-fr.txt
+echo "peach péché pêche sin" | java  -Duser.language=en -Duser.country=US -jar target/string-permutator-*.jar > permutations-en.txt
 diff permutations-*
 ```
 
-
-NOTE! Not working for Spanish of German collation. Requires further debugging. Use case:
+NOTE! By default JDK uses default collation rules for many locales. In order to provide a locale for the language,
+add collation rules to the CustomCollationsBootstrap. Rules should comply with the [grammar](https://docs.oracle.com/javase/8/docs/api/java/text/RuleBasedCollator.html)
+In this project, a collation for traditional Spanish was added. 
 ```
 rm  permutations-*
-echo "chao cu" | java  -Duser.language=es -Duser.country=ES  -jar target/string-permutator-*.jar > permutations-fr.txt
-echo "chao cu" | java  -Duser.language=en -Duser.country=US -jar target/string-permutator-*.jar > permutations-en.txt
+echo "chalina curioso llama luz" | java  -Duser.language=es -Duser.country=ES  -jar target/string-permutator-*.jar > permutations-es.txt
+echo "chalina curioso llama luz" | java  -Duser.language=en -Duser.country=US -jar target/string-permutator-*.jar > permutations-en.txt
+diff permutations-*
+```
+```
+rm  permutations-*
+echo "Muffler Müller MXSystems MySQL" | java  -Duser.language=de -Duser.country=DE  -jar target/string-permutator-*.jar > permutations-de.txt
+echo "Muffler Müller MXSystems MySQL" | java  -Duser.language=en -Duser.country=US -jar target/string-permutator-*.jar > permutations-en.txt
 diff permutations-*
 ```
 
